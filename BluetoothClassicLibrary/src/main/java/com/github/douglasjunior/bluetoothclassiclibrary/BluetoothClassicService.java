@@ -326,20 +326,30 @@ public class BluetoothClassicService extends BluetoothService {
             Log.i(TAG, "BEGIN mConnectedThread");
             byte temp;
             final byte[] buffer = new byte[mConfig.bufferSize];
+            final byte[] headerBuffer = new byte[6];
             int i = 0;
-            byte byteDelimiter = (byte) mConfig.characterDelimiter;
+            boolean headerCompleted = false;
+            // byte byteDelimiter = (byte) mConfig.characterDelimiter;
             // Keep listening to the InputStream while connected
             while (!canceled) {
                 try {
                     // Read from the InputStream
                     int read = mmInStream.read();
                     temp = (byte) read;
-
-                    if(read == -1) {
-                        dispatchBuffer(buffer, i);
+                    if (i >= 0 && i< 6) {
+                        headerBuffer[i] = temp;
+                        i++;
+                        continue;
+                    } else if (i == 6 && headerCompleted) {
+                        headerCompleted = true;
+                    }
+                    if (read == -1) {
+                        Log.e("header completed", headerBuffer);
+                        Log.e("buffer completed", headerBuffer);
+                        dispatchBuffer(buffer, i - 6);
                         i = 0;
                     }
-                    buffer[i] = temp;
+                    buffer[i - 6] = temp;
                     i++;
 
                     //System.out.println("read: " + new String(buffer, 0 , i));
