@@ -344,8 +344,8 @@ public class BluetoothClassicService extends BluetoothService {
                         headerCompleted = true;
                     }
                     if (read == -1) {
-                        Log.e("header completed", headerBuffer);
-                        Log.e("buffer completed", headerBuffer);
+                        Log.e("header completed", headerBuffer.toString());
+                        Log.e("buffer completed", headerBuffer.toString());
                         dispatchBuffer(buffer, i - 6);
                         i = 0;
                     }
